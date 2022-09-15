@@ -3,9 +3,36 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ir.moke.yaja</groupId>
     <artifactId>maven-yaja</artifactId>
+    <version>1.0</version>
+
     <packaging>maven-plugin</packaging>
-    <version>1.0-SNAPSHOT</version>
     <name>JOS maven yaja plugin</name>
+    <description>
+        Yet Another Java Archive
+    </description>
+    <url>https://github.com/Java-OS/maven-yaja</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Mahdi Sheikh Hosseini</name>
+            <email>mahsom@gmail.com</email>
+            <organization>ir.moke</organization>
+            <organizationUrl>http://www.moke.ir</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:Java-OS/maven-yaja.git</connection>
+        <developerConnection>scm:git:git@github.com:Java-OS/maven-yaja.git</developerConnection>
+        <url>https://github.com/Java-OS/maven-yaja</url>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -39,6 +66,17 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>
@@ -58,6 +96,31 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.8.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.13</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
             </plugin>
         </plugins>
     </build>
