@@ -64,7 +64,8 @@ public class ArchivePluginMojo extends AbstractMojo {
     @SuppressWarnings("unchecked")
     public void execute() throws MojoExecutionException, MojoFailureException {
         Path targetDirectory = getTargetDirectory();
-        Path targetYajaFilePath = targetDirectory.resolve(name + "-" + version + ".yaja");
+        //TODO: change suffix zip to yaja
+        Path targetYajaFilePath = targetDirectory.resolve(name + "-" + version + ".zip");
         Path manifestPath = targetDirectory.resolve("manifest.yaml");
         YajaArchive yajaArchive = createYajaArchiveObject();
         YamlUtils.writeToFile(manifestPath.toFile(), yajaArchive);
