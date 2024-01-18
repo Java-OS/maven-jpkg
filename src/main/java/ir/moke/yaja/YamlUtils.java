@@ -1,10 +1,8 @@
 package ir.moke.yaja;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 
@@ -17,7 +15,7 @@ public class YamlUtils {
 
     static {
         YAMLFactory yamlFactory = new YAMLFactory();
-        yamlFactory.configure(YAMLGenerator.Feature.INDENT_ARRAYS,true);
+        yamlFactory.configure(YAMLGenerator.Feature.INDENT_ARRAYS, true);
         objectMapper = new ObjectMapper(yamlFactory);
     }
 

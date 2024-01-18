@@ -1,8 +1,8 @@
 package ir.moke.yaja;
 
 public class Dependency {
-    private String name ;
-    private String version ;
+    private String name;
+    private String version;
 
     public String getName() {
         return name;

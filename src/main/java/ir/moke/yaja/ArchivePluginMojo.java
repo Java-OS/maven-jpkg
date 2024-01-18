@@ -2,8 +2,6 @@ package ir.moke.yaja;
 
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -62,10 +60,10 @@ public class ArchivePluginMojo extends AbstractMojo {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() {
         Path targetDirectory = getTargetDirectory();
         //TODO: change suffix zip to yaja
-        Path targetYajaFilePath = targetDirectory.resolve(name + "-" + version + ".zip");
+        Path targetYajaFilePath = targetDirectory.resolve(name + "-" + version + ".yaja");
         Path manifestPath = targetDirectory.resolve("manifest.yaml");
         YajaArchive yajaArchive = createYajaArchiveObject();
         YamlUtils.writeToFile(manifestPath.toFile(), yajaArchive);
