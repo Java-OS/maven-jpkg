@@ -1,5 +1,6 @@
 package ir.moke.yaja;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -65,17 +66,27 @@ public class ArchivePluginMojo extends AbstractMojo {
         //TODO: change suffix zip to yaja
         Path targetYajaFilePath = targetDirectory.resolve(name + "-" + version + ".yaja");
         Path manifestPath = targetDirectory.resolve("manifest.yaml");
-        YajaArchive yajaArchive = createYajaArchiveObject();
-        YamlUtils.writeToFile(manifestPath.toFile(), yajaArchive);
 
         List<Path> filesToZip = new ArrayList<>();
         filesToZip.add(manifestPath);
         filesToZip.add(project.getArtifact().getFile().toPath());
 
         Set<DefaultArtifact> depArtifactList = project.getDependencyArtifacts();
+        List<String> files = new ArrayList<>();
         for (DefaultArtifact dep : depArtifactList) {
-            if (dep.getScope().equals("compile")) filesToZip.add(dep.getFile().toPath());
+            Path path = dep.getFile().toPath();
+            if (dep.getScope().equals("compile")) filesToZip.add(path);
+            try {
+                byte[] bytes = Files.readAllBytes(path);
+                files.add(path.toFile().getName() + " - " + DigestUtils.sha256Hex(bytes));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
+
+        YajaArchive yajaArchive = createYajaArchiveObject();
+        yajaArchive.setFiles(files);
+        YamlUtils.writeToFile(manifestPath.toFile(), yajaArchive);
         try {
             ArchiveUtils.zipFile(targetYajaFilePath, filesToZip);
             getLog().info("Jos archive generated: " + WHITE_BOLD + targetYajaFilePath.toAbsolutePath() + ANSI_RESET);

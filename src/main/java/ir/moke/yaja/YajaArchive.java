@@ -2,6 +2,8 @@ package ir.moke.yaja;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class YajaArchive {
 
@@ -11,6 +13,7 @@ public class YajaArchive {
     private String url;
     private String description;
     private String[] dependencies;
+    private List<String> files;
 
     public String getName() {
         return name;
@@ -58,5 +61,13 @@ public class YajaArchive {
 
     public void setDependencies(String[] dependencies) {
         this.dependencies = dependencies;
+    }
+
+    public List<String> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<String> files) {
+        this.files = files;
     }
 }
