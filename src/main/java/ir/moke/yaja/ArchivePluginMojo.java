@@ -66,23 +66,25 @@ public class ArchivePluginMojo extends AbstractMojo {
         //TODO: change suffix zip to yaja
         Path targetYajaFilePath = targetDirectory.resolve(name + "-" + version + ".yaja");
         Path manifestPath = targetDirectory.resolve("manifest.yaml");
+        Path projectJarFile = this.project.getArtifact().getFile().toPath();
 
         List<Path> filesToZip = new ArrayList<>();
         filesToZip.add(manifestPath);
-        filesToZip.add(project.getArtifact().getFile().toPath());
+        filesToZip.add(projectJarFile);
 
-        Set<DefaultArtifact> depArtifactList = project.getDependencyArtifacts();
+        Set<DefaultArtifact> depArtifactList = this.project.getDependencyArtifacts();
         List<String> files = new ArrayList<>();
         for (DefaultArtifact dep : depArtifactList) {
             Path path = dep.getFile().toPath();
-            if (dep.getScope().equals("compile")) filesToZip.add(path);
-            try {
-                byte[] bytes = Files.readAllBytes(path);
-                files.add(path.toFile().getName() + " - " + DigestUtils.sha256Hex(bytes));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if (dep.getScope().equals("compile")) {
+                filesToZip.add(path);
+                files.add(getHashLine(path));
             }
         }
+        files.add(getHashLine(projectJarFile));
+
+        System.out.println("Files hashed : ");
+        files.forEach(item -> System.out.println("- " + item));
 
         YajaArchive yajaArchive = createYajaArchiveObject();
         yajaArchive.setFiles(files);
@@ -91,6 +93,15 @@ public class ArchivePluginMojo extends AbstractMojo {
             ArchiveUtils.zipFile(targetYajaFilePath, filesToZip);
             getLog().info("Jos archive generated: " + WHITE_BOLD + targetYajaFilePath.toAbsolutePath() + ANSI_RESET);
         } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String getHashLine(Path path) {
+        try {
+            byte[] bytes = Files.readAllBytes(path);
+            return path.toFile().getName() + " - " + DigestUtils.sha256Hex(bytes);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
