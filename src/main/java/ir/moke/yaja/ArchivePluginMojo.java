@@ -83,7 +83,7 @@ public class ArchivePluginMojo extends AbstractMojo {
         }
         files.add(getHashLine(projectJarFile));
 
-        System.out.println("Files hashed : ");
+        System.out.println("Files Hash : ");
         files.forEach(item -> System.out.println("- " + item));
 
         YajaArchive yajaArchive = createYajaArchiveObject();
