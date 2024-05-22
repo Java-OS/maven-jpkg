@@ -1,4 +1,4 @@
-package ir.moke.yaja;
+package ir.moke.jpkg;
 
 public class JosDependency {
     private String name;

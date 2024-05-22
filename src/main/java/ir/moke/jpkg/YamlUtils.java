@@ -1,4 +1,4 @@
-package ir.moke.yaja;
+package ir.moke.jpkg;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;

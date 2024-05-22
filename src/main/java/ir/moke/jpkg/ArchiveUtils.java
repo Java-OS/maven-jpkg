@@ -1,4 +1,4 @@
-package ir.moke.yaja;
+package ir.moke.jpkg;
 
 import java.io.File;
 import java.io.FileInputStream;

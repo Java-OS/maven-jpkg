@@ -1,4 +1,4 @@
-package ir.moke.yaja;
+package ir.moke.jpkg;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -116,12 +116,10 @@ public class ArchivePluginMojo extends AbstractMojo {
     @Override
     public void execute() {
         try {
-
             List<Dependency> projectDependencies = getArtifactsDependencies(project, "provided");
 
-
             Path targetDirectory = getTargetDirectory();
-            Path targetYajaFilePath = targetDirectory.resolve(name + "-" + version + ".yaja");
+            Path targetJpkgFilePath = targetDirectory.resolve(name + "-" + version + ".jpkg");
             Path manifestPath = targetDirectory.resolve("manifest.yaml");
 
             List<Path> filesToZip = new ArrayList<>();
@@ -138,12 +136,12 @@ public class ArchivePluginMojo extends AbstractMojo {
             System.out.println("Files Hash : ");
             fileHashes.forEach(item -> System.out.println("- " + item));
 
-            YajaArchive yajaArchive = createYajaArchiveObject();
-            yajaArchive.setFiles(fileHashes);
-            YamlUtils.writeToFile(manifestPath.toFile(), yajaArchive);
+            JpkgArchive jpkgArchive = createJpkgArchiveObject();
+            jpkgArchive.setFiles(fileHashes);
+            YamlUtils.writeToFile(manifestPath.toFile(), jpkgArchive);
 
-            ArchiveUtils.zipFile(targetYajaFilePath, filesToZip);
-            getLog().info("Jos archive generated: " + WHITE_BOLD + targetYajaFilePath.toAbsolutePath() + ANSI_RESET);
+            ArchiveUtils.zipFile(targetJpkgFilePath, filesToZip);
+            getLog().info("Jos archive generated: " + WHITE_BOLD + targetJpkgFilePath.toAbsolutePath() + ANSI_RESET);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -161,8 +159,8 @@ public class ArchivePluginMojo extends AbstractMojo {
         return targetDir;
     }
 
-    private YajaArchive createYajaArchiveObject() {
-        YajaArchive archive = new YajaArchive();
+    private JpkgArchive createJpkgArchiveObject() {
+        JpkgArchive archive = new JpkgArchive();
         archive.setName(name);
         archive.setVersion(version);
         archive.setMaintainer(maintainer);

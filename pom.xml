@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>ir.moke.yaja</groupId>
-    <artifactId>maven-yaja</artifactId>
+    <groupId>ir.moke.jpkg</groupId>
+    <artifactId>maven-jpkg</artifactId>
     <version>1.0</version>
 
     <packaging>maven-plugin</packaging>
-    <name>JOS maven yaja plugin</name>
+    <name>JOS maven jpkg plugin</name>
     <description>
         Yet Another Java Archive
     </description>
-    <url>https://github.com/Java-OS/maven-yaja</url>
+    <url>https://github.com/Java-OS/maven-jpkg</url>
 
     <licenses>
         <license>
@@ -29,9 +29,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:Java-OS/maven-yaja.git</connection>
-        <developerConnection>scm:git:git@github.com:Java-OS/maven-yaja.git</developerConnection>
-        <url>https://github.com/Java-OS/maven-yaja</url>
+        <connection>scm:git:git@github.com:Java-OS/maven-jpkg.git</connection>
+        <developerConnection>scm:git:git@github.com:Java-OS/maven-jpkg.git</developerConnection>
+        <url>https://github.com/Java-OS/maven-jpkg</url>
     </scm>
 
     <dependencies>
