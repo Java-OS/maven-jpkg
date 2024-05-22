@@ -7,9 +7,7 @@
 
     <packaging>maven-plugin</packaging>
     <name>JOS maven jpkg plugin</name>
-    <description>
-        Yet Another Java Archive
-    </description>
+    <description>JOS Module Package</description>
     <url>https://github.com/Java-OS/maven-jpkg</url>
 
     <licenses>

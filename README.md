@@ -7,8 +7,8 @@
 ```xml
 
 <plugin>
-    <groupId>ir.moke.yaja</groupId>
-    <artifactId>maven-yaja</artifactId>
+    <groupId>ir.moke.jpkg</groupId>
+    <artifactId>maven-jpkg</artifactId>
     <configuration>
         <name>application</name>
         <version>0.1</version>
