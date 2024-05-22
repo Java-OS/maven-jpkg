@@ -73,12 +73,6 @@ public class ArchivePluginMojo extends AbstractMojo {
     private String description;
 
     /**
-     * target of copy dependencies directory
-     */
-    @Parameter(name = "libDir", readonly = true)
-    private String libDir;
-
-    /**
      * Jos's dependencies of this module
      */
     @Parameter(name = "dependencies", readonly = true)
