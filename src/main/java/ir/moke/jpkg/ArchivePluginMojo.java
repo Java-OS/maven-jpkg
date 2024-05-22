@@ -110,7 +110,7 @@ public class ArchivePluginMojo extends AbstractMojo {
     @Override
     public void execute() {
         try {
-            List<Dependency> projectDependencies = getArtifactsDependencies(project, "provided");
+            List<Dependency> projectDependencies = getArtifactsDependencies(project, "compile");
 
             Path targetDirectory = getTargetDirectory();
             Path targetJpkgFilePath = targetDirectory.resolve(name + "-" + version + ".jpkg");
