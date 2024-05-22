@@ -46,36 +46,36 @@ public class ArchivePluginMojo extends AbstractMojo {
     /**
      * Jos module name
      */
-    @Parameter(name = "name", required = true, readonly = true)
+    @Parameter(name = "name", required = true)
     private String name;
     /**
      * Jos module version
      */
-    @Parameter(name = "version", required = true, readonly = true)
+    @Parameter(name = "version", required = true)
     private String version;
 
     /**
      * Jos module maintainer
      */
-    @Parameter(name = "maintainer", readonly = true)
+    @Parameter(name = "maintainer")
     private String maintainer;
 
     /**
      * Jos module url
      */
-    @Parameter(name = "url", readonly = true)
+    @Parameter(name = "url")
     private String url;
 
     /**
      * Jos module description
      */
-    @Parameter(name = "description", readonly = true)
+    @Parameter(name = "description")
     private String description;
 
     /**
      * Jos's dependencies of this module
      */
-    @Parameter(name = "dependencies", readonly = true)
+    @Parameter(name = "dependencies")
     private JosDependency[] dependencies;
 
     private static String getHash(Path path) {
