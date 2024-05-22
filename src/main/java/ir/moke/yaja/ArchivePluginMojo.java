@@ -1,12 +1,22 @@
 package ir.moke.yaja;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.DependencyRequest;
+import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,14 +25,23 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @Mojo(name = "archive", defaultPhase = LifecyclePhase.PACKAGE)
 public class ArchivePluginMojo extends AbstractMojo {
-    private static final String ANSI_RESET = "\u001B[0m";
     public static final String WHITE_BOLD = "\033[1;37m";
+    private static final String ANSI_RESET = "\u001B[0m";
+
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
+
+    @Component
+    private RepositorySystem repositorySystem;
+
+    @Parameter(defaultValue = "${project.remoteProjectRepositories}")
+    private List<RemoteRepository> projectRepos;
+
+    @Parameter(defaultValue = "${repositorySystemSession}")
+    private RepositorySystemSession repoSession;
 
     /**
      * Jos module name
@@ -54,54 +73,78 @@ public class ArchivePluginMojo extends AbstractMojo {
     private String description;
 
     /**
+     * target of copy dependencies directory
+     */
+    @Parameter(name = "libDir", readonly = true)
+    private String libDir;
+
+    /**
      * Jos's dependencies of this module
      */
     @Parameter(name = "dependencies", readonly = true)
-    private Dependency[] dependencies;
+    private JosDependency[] dependencies;
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public void execute() {
-        Path targetDirectory = getTargetDirectory();
-        //TODO: change suffix zip to yaja
-        Path targetYajaFilePath = targetDirectory.resolve(name + "-" + version + ".yaja");
-        Path manifestPath = targetDirectory.resolve("manifest.yaml");
-        Path projectJarFile = this.project.getArtifact().getFile().toPath();
-
-        List<Path> filesToZip = new ArrayList<>();
-        filesToZip.add(manifestPath);
-        filesToZip.add(projectJarFile);
-
-        Set<DefaultArtifact> depArtifactList = this.project.getDependencyArtifacts();
-        List<String> files = new ArrayList<>();
-        for (DefaultArtifact dep : depArtifactList) {
-            Path path = dep.getFile().toPath();
-            if (dep.getScope().equals("compile")) {
-                filesToZip.add(path);
-                files.add(getHashLine(path));
-            }
-        }
-        files.add(getHashLine(projectJarFile));
-
-        System.out.println("Files Hash : ");
-        files.forEach(item -> System.out.println("- " + item));
-
-        YajaArchive yajaArchive = createYajaArchiveObject();
-        yajaArchive.setFiles(files);
-        YamlUtils.writeToFile(manifestPath.toFile(), yajaArchive);
-        try {
-            ArchiveUtils.zipFile(targetYajaFilePath, filesToZip);
-            getLog().info("Jos archive generated: " + WHITE_BOLD + targetYajaFilePath.toAbsolutePath() + ANSI_RESET);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static String getHashLine(Path path) {
+    private static String getHash(Path path) {
         try {
             byte[] bytes = Files.readAllBytes(path);
             return path.toFile().getName() + " - " + DigestUtils.sha256Hex(bytes);
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Dependency> getArtifactsDependencies(MavenProject project, String scope) throws Exception {
+        DefaultArtifact pomArtifact = new DefaultArtifact(project.getId());
+
+        Dependency dependency = new Dependency(pomArtifact, scope);
+
+        CollectRequest collectRequest = new CollectRequest();
+        collectRequest.setRoot(dependency);
+        collectRequest.setRepositories(projectRepos);
+
+        DependencyNode node = repositorySystem.collectDependencies(repoSession, collectRequest).getRoot();
+        DependencyRequest projectDependencyRequest = new DependencyRequest(node, null);
+
+        repositorySystem.resolveDependencies(repoSession, projectDependencyRequest);
+
+        PreorderNodeListGenerator nlg = new PreorderNodeListGenerator();
+        node.accept(nlg);
+
+        return new ArrayList<>(nlg.getDependencies(true));
+    }
+
+    @Override
+    public void execute() {
+        try {
+
+            List<Dependency> projectDependencies = getArtifactsDependencies(project, "provided");
+
+
+            Path targetDirectory = getTargetDirectory();
+            Path targetYajaFilePath = targetDirectory.resolve(name + "-" + version + ".yaja");
+            Path manifestPath = targetDirectory.resolve("manifest.yaml");
+
+            List<Path> filesToZip = new ArrayList<>();
+            filesToZip.add(manifestPath);
+
+            List<String> fileHashes = new ArrayList<>();
+            for (Dependency dependency : projectDependencies) {
+                Artifact artifact = dependency.getArtifact();
+                Path path = artifact.getFile().toPath();
+                filesToZip.add(path);
+                fileHashes.add(getHash(path));
+            }
+
+            System.out.println("Files Hash : ");
+            fileHashes.forEach(item -> System.out.println("- " + item));
+
+            YajaArchive yajaArchive = createYajaArchiveObject();
+            yajaArchive.setFiles(fileHashes);
+            YamlUtils.writeToFile(manifestPath.toFile(), yajaArchive);
+
+            ArchiveUtils.zipFile(targetYajaFilePath, filesToZip);
+            getLog().info("Jos archive generated: " + WHITE_BOLD + targetYajaFilePath.toAbsolutePath() + ANSI_RESET);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

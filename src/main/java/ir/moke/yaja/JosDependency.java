@@ -1,6 +1,6 @@
 package ir.moke.yaja;
 
-public class Dependency {
+public class JosDependency {
     private String name;
     private String version;
 
