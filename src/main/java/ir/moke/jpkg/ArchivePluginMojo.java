@@ -113,7 +113,7 @@ public class ArchivePluginMojo extends AbstractMojo {
             List<Dependency> projectDependencies = getArtifactsDependencies(project, "compile");
 
             Path targetDirectory = getTargetDirectory();
-            Path targetJpkgFilePath = targetDirectory.resolve(name + "-" + version + ".jpkg");
+            Path targetJpkgFilePath = targetDirectory.resolve(name.replaceAll("\\s+", "_") + "-" + version.replaceAll("\\s+", "_") + ".jpkg");
             Path manifestPath = targetDirectory.resolve("manifest.yaml");
 
             List<Path> filesToZip = new ArrayList<>();
