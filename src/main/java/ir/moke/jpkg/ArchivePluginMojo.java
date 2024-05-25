@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 @Mojo(name = "archive", defaultPhase = LifecyclePhase.PACKAGE)
@@ -81,7 +82,7 @@ public class ArchivePluginMojo extends AbstractMojo {
     private static String getHash(Path path) {
         try {
             byte[] bytes = Files.readAllBytes(path);
-            return path.toFile().getName() + " - " + DigestUtils.sha256Hex(bytes);
+            return DigestUtils.sha256Hex(bytes) + " - " + path.toFile().getName();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -128,7 +129,10 @@ public class ArchivePluginMojo extends AbstractMojo {
             }
 
             System.out.println("Files Hash : ");
-            fileHashes.forEach(item -> System.out.println("- " + item));
+            fileHashes.stream()
+                    .map(item -> item.split("-",2))
+                    .sorted(Comparator.comparing(o -> o[1]))
+                    .forEach(item -> System.out.println("- " + item[0] + " - " + item[1]));
 
             JpkgArchive jpkgArchive = createJpkgArchiveObject();
             jpkgArchive.setFiles(fileHashes);
