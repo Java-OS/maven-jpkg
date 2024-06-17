@@ -9,6 +9,7 @@
 <plugin>
     <groupId>ir.moke.jpkg</groupId>
     <artifactId>maven-jpkg</artifactId>
+    <version>1.1</version>
     <configuration>
         <name>application</name>
         <version>0.1</version>
