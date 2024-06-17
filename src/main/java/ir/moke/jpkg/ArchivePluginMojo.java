@@ -111,7 +111,7 @@ public class ArchivePluginMojo extends AbstractMojo {
     @Override
     public void execute() {
         try {
-            List<Dependency> projectDependencies = getArtifactsDependencies(project, "compile");
+            List<Dependency> projectDependencies = getArtifactsDependencies(project, "runtime");
 
             Path targetDirectory = getTargetDirectory();
             Path targetJpkgFilePath = targetDirectory.resolve(name.replaceAll("\\s+", "_") + "-" + version.replaceAll("\\s+", "_") + ".jpkg");
