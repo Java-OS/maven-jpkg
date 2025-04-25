@@ -23,7 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -72,12 +71,6 @@ public class ArchivePluginMojo extends AbstractMojo {
      */
     @Parameter(name = "description")
     private String description;
-
-    /**
-     * Jos's dependencies of this module
-     */
-    @Parameter(name = "dependencies")
-    private JosDependency[] dependencies;
 
     private static String getHash(Path path) {
         try {
@@ -130,7 +123,7 @@ public class ArchivePluginMojo extends AbstractMojo {
 
             System.out.println("Files Hash : ");
             fileHashes.stream()
-                    .map(item -> item.split("-",2))
+                    .map(item -> item.split("-", 2))
                     .sorted(Comparator.comparing(o -> o[1]))
                     .forEach(item -> System.out.println("- " + item[0] + " - " + item[1]));
 
@@ -164,10 +157,6 @@ public class ArchivePluginMojo extends AbstractMojo {
         archive.setMaintainer(maintainer);
         archive.setDescription(description);
         archive.setUrl(url);
-        if (dependencies != null) {
-            List<String> list = Arrays.stream(dependencies).map(item -> item.getName() + ":" + item.getVersion()).toList();
-            archive.setDependencies(list.toArray(String[]::new));
-        }
         return archive;
     }
 }

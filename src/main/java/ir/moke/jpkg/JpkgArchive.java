@@ -12,7 +12,6 @@ public class JpkgArchive {
     private String maintainer;
     private String url;
     private String description;
-    private String[] dependencies;
     private List<String> files;
 
     public String getName() {
@@ -53,14 +52,6 @@ public class JpkgArchive {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String[] getDependencies() {
-        return dependencies;
-    }
-
-    public void setDependencies(String[] dependencies) {
-        this.dependencies = dependencies;
     }
 
     public List<String> getFiles() {
